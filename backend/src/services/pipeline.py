@@ -102,8 +102,9 @@ async def start_run(
     try:
         await _run_pipeline(run_id, workspace_id, doc_id, question, ocr_enabled, eml_scope, system_prompt_extra)
     except Exception as exc:
-        RunRegistry.update(run_id, status="failed", error=str(exc))
-        await RunRegistry.emit(run_id, {"type": "error", "message": str(exc)})
+        msg = _friendly_error(exc)
+        RunRegistry.update(run_id, status="failed", error=msg)
+        await RunRegistry.emit(run_id, {"type": "error", "message": msg})
 
 
 async def _run_pipeline(
@@ -327,6 +328,35 @@ async def _synthesize(connector, question: str, pool: list[dict], cfg, system_pr
 
     result["citations"] = enriched
     return result, usage
+
+
+def _friendly_error(exc: Exception) -> str:
+    """Convert raw exceptions into human-readable error messages."""
+    try:
+        import httpx
+        if isinstance(exc, httpx.ConnectError):
+            return (
+                f"Could not connect to the LLM provider. "
+                f"If you are using Ollama, make sure it is running and the base URL is correct. "
+                f"Detail: {exc}"
+            )
+        if isinstance(exc, (httpx.ReadTimeout, httpx.WriteTimeout, httpx.ConnectTimeout, httpx.PoolTimeout)):
+            return (
+                f"The LLM provider did not respond in time. "
+                f"Try increasing the timeout in Settings. "
+                f"Detail: {exc}"
+            )
+        if isinstance(exc, httpx.HTTPStatusError):
+            body = exc.response.text[:300] if exc.response.text else "(no body)"
+            return (
+                f"The LLM provider returned HTTP {exc.response.status_code}. "
+                f"Check your API key and model name. "
+                f"Response: {body}"
+            )
+    except ImportError:
+        pass
+    msg = str(exc)
+    return msg if msg.strip() else f"{type(exc).__name__} (no detail available)"
 
 
 def _strip_code_fence(text: str) -> str:
