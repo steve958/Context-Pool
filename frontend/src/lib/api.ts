@@ -23,8 +23,13 @@ export const api = {
     list: () => request<{ workspaces: Workspace[] }>("/api/workspaces"),
     create: (name: string) =>
       request<Workspace>("/api/workspaces", { method: "POST", body: JSON.stringify({ name }) }),
-    delete: (wsId: string) =>
-      fetch(`${BASE}/api/workspaces/${wsId}`, { method: "DELETE", headers: authHeaders() }),
+    delete: async (wsId: string) => {
+      const res = await fetch(`${BASE}/api/workspaces/${wsId}`, { method: "DELETE", headers: authHeaders() });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }));
+        throw new Error(err.error || err.detail || `HTTP ${res.status}`);
+      }
+    },
   },
   documents: {
     list: (wsId: string) =>
@@ -38,11 +43,16 @@ export const api = {
         headers: authHeaders(),
       }).then((r) => r.json());
     },
-    delete: (wsId: string, docId: string) =>
-      fetch(`${BASE}/api/workspaces/${wsId}/documents/${docId}`, {
+    delete: async (wsId: string, docId: string) => {
+      const res = await fetch(`${BASE}/api/workspaces/${wsId}/documents/${docId}`, {
         method: "DELETE",
         headers: authHeaders(),
-      }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }));
+        throw new Error(err.error || err.detail || `HTTP ${res.status}`);
+      }
+    },
   },
   query: {
     create: (body: QueryRequest) =>

@@ -51,10 +51,11 @@ export default function WorkspacesPage() {
   async function handleDelete() {
     if (!deleteTarget) return;
     setDeleting(true);
+    setError("");
     try {
       await api.workspaces.delete(deleteTarget.ws_id);
-      setWorkspaces((prev) => prev.filter((w) => w.ws_id !== deleteTarget.ws_id));
       setDeleteTarget(null);
+      await load();
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to delete workspace");
     } finally {
@@ -70,7 +71,7 @@ export default function WorkspacesPage() {
             <h1 className="text-xl font-semibold text-[var(--text-primary)]">Context Pool</h1>
             <p className="text-sm text-[var(--text-muted)] mt-0.5">Select or create a workspace</p>
           </div>
-          <Button onClick={() => setModalOpen(true)}>New workspace</Button>
+          <Button onClick={() => { setError(""); setModalOpen(true); }}>New workspace</Button>
         </div>
 
         {error && (
