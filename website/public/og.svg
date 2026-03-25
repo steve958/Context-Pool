@@ -1,0 +1,169 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#07061a"/>
+      <stop offset="100%" stop-color="#100e28"/>
+    </linearGradient>
+
+    <!-- Icon bg -->
+    <linearGradient id="iconBg" x1="80" y1="160" x2="320" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0e0c22"/>
+      <stop offset="100%" stop-color="#1c1a38"/>
+    </linearGradient>
+
+    <!-- Stream gradients -->
+    <linearGradient id="sa" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#9d91ff" stop-opacity="0.80"/>
+      <stop offset="100%" stop-color="#9d91ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.50"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Pool -->
+    <radialGradient id="pool" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ddd6fe"/>
+      <stop offset="40%"  stop-color="#7c6af7"/>
+      <stop offset="100%" stop-color="#4c3fcc"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="200" cy="370" r="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Bg ambient glow -->
+    <radialGradient id="ambientL" cx="200" cy="315" r="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="ambientR" cx="900" cy="315" r="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Headline gradient -->
+    <linearGradient id="headline" x1="360" y1="0" x2="1050" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#f0f0fc"/>
+      <stop offset="62%"  stop-color="#f0f0fc"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+
+    <filter id="dotGlow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="streamGlow" x="-30%" y="0" width="160%" height="110%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <clipPath id="iconClip">
+      <rect x="80" y="160" width="240" height="310" rx="52"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#ambientL)"/>
+  <rect width="1200" height="630" fill="url(#ambientR)"/>
+
+  <!-- Subtle dot-grid -->
+  <g fill="#7c6af7" fill-opacity="0.07">
+    <rect x="0"    y="0"   width="1200" height="630"
+          fill="none" stroke="#7c6af7" stroke-opacity="0.04" stroke-width="0"/>
+    <!-- Dots at intersections of 80px grid -->
+    <!-- (abbreviated — just a few rows for performance) -->
+    <circle cx="80"  cy="80"  r="1.5"/><circle cx="160" cy="80"  r="1.5"/><circle cx="240" cy="80"  r="1.5"/>
+    <circle cx="320" cy="80"  r="1.5"/><circle cx="400" cy="80"  r="1.5"/><circle cx="480" cy="80"  r="1.5"/>
+    <circle cx="560" cy="80"  r="1.5"/><circle cx="640" cy="80"  r="1.5"/><circle cx="720" cy="80"  r="1.5"/>
+    <circle cx="800" cy="80"  r="1.5"/><circle cx="880" cy="80"  r="1.5"/><circle cx="960" cy="80"  r="1.5"/>
+    <circle cx="1040" cy="80" r="1.5"/><circle cx="1120" cy="80" r="1.5"/>
+    <circle cx="80"  cy="160" r="1.5"/><circle cx="160" cy="160" r="1.5"/><circle cx="240" cy="160" r="1.5"/>
+    <circle cx="320" cy="160" r="1.5"/><circle cx="400" cy="160" r="1.5"/><circle cx="480" cy="160" r="1.5"/>
+    <circle cx="80"  cy="240" r="1.5"/><circle cx="160" cy="240" r="1.5"/>
+    <circle cx="80"  cy="480" r="1.5"/><circle cx="160" cy="480" r="1.5"/>
+    <circle cx="80"  cy="560" r="1.5"/><circle cx="160" cy="560" r="1.5"/>
+    <circle cx="800" cy="160" r="1.5"/><circle cx="880" cy="160" r="1.5"/><circle cx="960" cy="160" r="1.5"/>
+    <circle cx="1040" cy="160" r="1.5"/><circle cx="1120" cy="160" r="1.5"/>
+    <circle cx="800" cy="480" r="1.5"/><circle cx="880" cy="480" r="1.5"/><circle cx="960" cy="480" r="1.5"/>
+    <circle cx="1040" cy="480" r="1.5"/><circle cx="1120" cy="480" r="1.5"/>
+    <circle cx="800" cy="560" r="1.5"/><circle cx="880" cy="560" r="1.5"/><circle cx="960" cy="560" r="1.5"/>
+    <circle cx="1040" cy="560" r="1.5"/><circle cx="1120" cy="560" r="1.5"/>
+  </g>
+
+  <!-- ── ICON MARK (240×310) ── -->
+  <rect x="80" y="160" width="240" height="310" rx="52" fill="url(#iconBg)"/>
+  <rect x="81.5" y="161.5" width="237" height="307" rx="51"
+        stroke="#7c6af7" stroke-opacity="0.24" stroke-width="3" fill="none"/>
+
+  <!-- Converging streams (pool dot at 200, 390) -->
+  <g clip-path="url(#iconClip)" filter="url(#streamGlow)">
+    <path d="M 108 178  Q 112 290  200 390" stroke="url(#sb)" stroke-width="4"   stroke-linecap="round" fill="none"/>
+    <path d="M 140 178  Q 150 295  200 390" stroke="url(#sa)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 200 178  Q 200 295  200 390" stroke="url(#sa)" stroke-width="6.5" stroke-linecap="round" fill="none"/>
+    <path d="M 260 178  Q 250 295  200 390" stroke="url(#sa)" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 292 178  Q 288 290  200 390" stroke="url(#sb)" stroke-width="4"   stroke-linecap="round" fill="none"/>
+
+    <!-- Origin dots -->
+    <circle cx="108" cy="178" r="5"  fill="#7c6af7" fill-opacity="0.50"/>
+    <circle cx="140" cy="178" r="6"  fill="#8b7ff7" fill-opacity="0.65"/>
+    <circle cx="200" cy="178" r="7"  fill="#9d91ff" fill-opacity="0.80"/>
+    <circle cx="260" cy="178" r="6"  fill="#8b7ff7" fill-opacity="0.65"/>
+    <circle cx="292" cy="178" r="5"  fill="#7c6af7" fill-opacity="0.50"/>
+  </g>
+
+  <!-- Pool -->
+  <circle cx="200" cy="390" r="48" fill="url(#halo)"/>
+  <circle cx="200" cy="390" r="28" fill="#7c6af7" fill-opacity="0.20"/>
+  <circle cx="200" cy="390" r="16" fill="url(#pool)" filter="url(#dotGlow)"/>
+
+  <!-- ── TEXT CONTENT ── -->
+  <!-- Eyebrow -->
+  <text x="360" y="228"
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
+        font-size="16" font-weight="600" letter-spacing="3"
+        fill="#5c56a0">OPEN SOURCE · SELF-HOSTED</text>
+
+  <!-- Headline -->
+  <text x="360" y="318"
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
+        font-size="88" font-weight="800" letter-spacing="-3.5"
+        fill="url(#headline)">Context Pool</text>
+
+  <!-- Subline -->
+  <text x="362" y="374"
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif"
+        font-size="26" font-weight="400" letter-spacing="0"
+        fill="#7068a8">Document Q&amp;A without embeddings or vector databases</text>
+
+  <!-- Provider badges -->
+  <g font-family="'Inter', Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="0.3">
+    <rect x="362" y="408" width="118" height="34" rx="17"
+          fill="#7c6af7" fill-opacity="0.10" stroke="#7c6af7" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="421" y="430" fill="#a78bfa" text-anchor="middle">OpenAI</text>
+
+    <rect x="492" y="408" width="130" height="34" rx="17"
+          fill="#7c6af7" fill-opacity="0.10" stroke="#7c6af7" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="557" y="430" fill="#a78bfa" text-anchor="middle">Anthropic</text>
+
+    <rect x="634" y="408" width="116" height="34" rx="17"
+          fill="#7c6af7" fill-opacity="0.10" stroke="#7c6af7" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="692" y="430" fill="#a78bfa" text-anchor="middle">Gemini</text>
+
+    <rect x="762" y="408" width="112" height="34" rx="17"
+          fill="#7c6af7" fill-opacity="0.10" stroke="#7c6af7" stroke-opacity="0.28" stroke-width="1"/>
+    <text x="818" y="430" fill="#a78bfa" text-anchor="middle">Ollama</text>
+  </g>
+
+  <!-- URL -->
+  <text x="362" y="510"
+        font-family="'Courier New', monospace" font-size="18" letter-spacing="0.3"
+        fill="#332f5a">github.com/your-org/context-pool</text>
+</svg>

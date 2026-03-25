@@ -1,0 +1,51 @@
+# Context Pool — Configuration
+# Copy this file to /data/config/config.yaml and edit it.
+# Mount the containing directory as a docker volume (see docker-compose.yml).
+#
+# Security environment variables (set in docker-compose.yml or .env file):
+#   API_KEY        — required key for all API/UI requests (leave unset to disable auth)
+#   ADMIN_API_KEY  — optional separate key for PATCH /api/settings (falls back to API_KEY)
+#   CORS_ORIGINS   — comma-separated allowed origins (default: http://localhost:3000)
+
+# Provider: openai | anthropic | google | ollama
+provider: openai
+
+# API key — use ENV:VAR_NAME to read from an environment variable
+# For Ollama: api_key can be omitted or set to any non-empty string (not used).
+api_key: "ENV:OPENAI_API_KEY"
+# api_key: "sk-..."  # or paste directly (not recommended)
+
+# Model name (provider-specific)
+model: "gpt-4o-mini"
+# model: "claude-3-5-haiku-20241022"   # Anthropic
+# model: "gemini-2.0-flash"            # Google
+# model: "llama3.2"                    # Ollama
+
+# Token limits
+# WARNING for Ollama/local models: most local models have a context window of
+# 4096–8192 tokens. Set these well below your model's actual limit.
+# Example for a typical 8192-token local model:
+#   context_window_tokens: 8192
+#   max_chunk_tokens: 3000
+context_window_tokens: 128000
+max_chunk_tokens: 24000
+
+# Timeouts (seconds)
+# WARNING for Ollama/local models: inference on consumer hardware is slow.
+# A 3000-token chunk may take 90–180 s on a mid-range GPU.
+# Raise chunk_call_seconds to at least 180 and synthesis_seconds to 300+.
+timeouts:
+  chunk_call_seconds: 60
+  synthesis_seconds: 120
+
+# Temperatures (lower = more deterministic)
+temperatures:
+  scanning: 0.1
+  synthesis: 0.2
+
+# Ollama base URL (only used when provider: ollama)
+# Windows / macOS Docker Desktop:  http://host.docker.internal:11434  (default)
+# Linux Docker:                    http://172.17.0.1:11434
+#   On Linux, host.docker.internal does not resolve inside containers.
+#   Use the docker bridge IP above, or run with --network=host.
+# ollama_base_url: "http://host.docker.internal:11434"

@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.env.local
+.env*.local
+
+# Config with secrets
+/data/
+backend/data/
+config.yaml
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Claude Code / Cursor internals
+.claude/
+.cursor/
+
+# Internal planning docs
+context-pool-prd.md
+context-pool-tasks.md

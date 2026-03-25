@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+
+    <!-- Background -->
+    <linearGradient id="bg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0e0c22"/>
+      <stop offset="100%" stop-color="#181530"/>
+    </linearGradient>
+
+    <!-- Stream gradients — each stream fades from its color into the pool accent -->
+    <linearGradient id="s1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#6c63f5" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#9f8fff" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="s2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#8b7ff7" stop-opacity="0.70"/>
+      <stop offset="100%" stop-color="#b8adff" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="s3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#6c63f5" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#9f8fff" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="s4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#a898ff" stop-opacity="0.0"/>
+    </linearGradient>
+    <linearGradient id="s5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#5e57e8" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#9f8fff" stop-opacity="0.0"/>
+    </linearGradient>
+
+    <!-- Pool dot radial -->
+    <radialGradient id="pool" cx="50" cy="50" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#c4b5fd"/>
+      <stop offset="45%"  stop-color="#7c6af7"/>
+      <stop offset="100%" stop-color="#5b4de0"/>
+    </radialGradient>
+
+    <!-- Halo behind pool dot -->
+    <radialGradient id="halo" cx="50" cy="50" r="50%" gradientUnits="objectBoundingBox">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.50"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Border inner glow -->
+    <radialGradient id="edgeGlow" cx="50" cy="10" r="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#7c6af7" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Pool dot glow filter -->
+    <filter id="dotGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Stream glow -->
+    <filter id="streamGlow" x="-50%" y="0%" width="200%" height="120%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip to icon bounds -->
+    <clipPath id="bounds">
+      <rect width="100" height="100" rx="22"/>
+    </clipPath>
+  </defs>
+
+  <!-- ── BACKGROUND ── -->
+  <rect width="100" height="100" rx="22" fill="url(#bg)"/>
+  <rect width="100" height="100" rx="22" fill="url(#edgeGlow)"/>
+  <!-- Border -->
+  <rect x="0.75" y="0.75" width="98.5" height="98.5" rx="21.5"
+        stroke="#7c6af7" stroke-opacity="0.22" stroke-width="1.5" fill="none"/>
+
+  <!-- ── CONVERGING STREAMS (clipped) ── -->
+  <g clip-path="url(#bounds)" filter="url(#streamGlow)">
+
+    <!--
+      Five streams: they originate at different x positions at the top
+      and ALL converge toward the pool dot at (50, 74).
+      Each stream is a <path> with a quadratic bezier curving inward.
+    -->
+
+    <!-- Stream 1 — far left, thin -->
+    <path d="M 18 8  Q 18 45  50 74" stroke="url(#s1)" stroke-width="2.2"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Stream 2 — left-center -->
+    <path d="M 31 8  Q 35 50  50 74" stroke="url(#s2)" stroke-width="3.0"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Stream 3 — center (tallest, brightest) -->
+    <path d="M 50 8  Q 50 50  50 74" stroke="url(#s2)" stroke-width="3.5"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Stream 4 — right-center -->
+    <path d="M 69 8  Q 65 50  50 74" stroke="url(#s3)" stroke-width="3.0"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Stream 5 — far right, thin -->
+    <path d="M 82 8  Q 80 45  50 74" stroke="url(#s4)" stroke-width="2.2"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Two extra faint outer streams for depth -->
+    <path d="M 8  16 Q 12 50  50 74" stroke="url(#s5)" stroke-width="1.5"
+          stroke-linecap="round" fill="none"/>
+    <path d="M 92 16 Q 88 50  50 74" stroke="url(#s5)" stroke-width="1.5"
+          stroke-linecap="round" fill="none"/>
+
+    <!-- Small tick marks at stream origins (top of each main stream) -->
+    <rect x="16"  y="8"  width="4"  height="4"  rx="2"  fill="#7c6af7" fill-opacity="0.45"/>
+    <rect x="29"  y="8"  width="4"  height="4"  rx="2"  fill="#8b7ff7" fill-opacity="0.60"/>
+    <rect x="48"  y="8"  width="4"  height="4"  rx="2"  fill="#9d91ff" fill-opacity="0.75"/>
+    <rect x="67"  y="8"  width="4"  height="4"  rx="2"  fill="#8b7ff7" fill-opacity="0.60"/>
+    <rect x="80"  y="8"  width="4"  height="4"  rx="2"  fill="#7c6af7" fill-opacity="0.45"/>
+
+  </g>
+
+  <!-- ── POOL DOT ── -->
+  <!-- Wide halo -->
+  <circle cx="50" cy="74" r="18" fill="url(#halo)"/>
+  <!-- Mid ring -->
+  <circle cx="50" cy="74" r="10" fill="#7c6af7" fill-opacity="0.25"/>
+  <!-- Core dot -->
+  <circle cx="50" cy="74" r="6.5" fill="url(#pool)" filter="url(#dotGlow)"/>
+
+</svg>

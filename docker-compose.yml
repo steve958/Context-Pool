@@ -1,0 +1,60 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: context-pool-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - documents_data:/data/documents
+      - ./config:/data/config
+    environment:
+      - DATA_DIR=/data/documents
+      - CONFIG_PATH=/data/config/config.yaml
+      - OCR_API_KEY=${OCR_API_KEY:-}
+      # SEC-01: Set API_KEY to require authentication on all endpoints.
+      # Leave unset (or empty) to disable auth for local development.
+      - API_KEY=${API_KEY:-}
+      # SEC-06: Optional separate admin key for PATCH /api/settings.
+      # Falls back to API_KEY when not set.
+      - ADMIN_API_KEY=${ADMIN_API_KEY:-}
+      # SEC-03: Comma-separated list of allowed CORS origins.
+      # Example: CORS_ORIGINS=https://myapp.com,https://app2.com
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    networks:
+      - context-pool-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: context-pool-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - INTERNAL_API_URL=http://backend:8000
+      # SEC-01: Must match the API_KEY set on the backend.
+      # Leave unset to disable auth for local development.
+      - NEXT_PUBLIC_API_KEY=${API_KEY:-}
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - context-pool-net
+
+volumes:
+  documents_data:
+
+networks:
+  context-pool-net:
+    driver: bridge
