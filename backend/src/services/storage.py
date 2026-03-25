@@ -134,7 +134,7 @@ def delete_workspace(ws_id: str) -> bool:
     ws_dir = _ws_dir(ws_id)
     if not ws_dir.exists():
         return False
-    shutil.rmtree(ws_dir)
+    shutil.rmtree(ws_dir, ignore_errors=True)
     return True
 
 

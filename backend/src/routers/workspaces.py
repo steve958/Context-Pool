@@ -35,4 +35,7 @@ async def list_workspaces_endpoint():
 async def delete_workspace_endpoint(ws_id: str):
     if not get_workspace(ws_id):
         raise HTTPException(status_code=404, detail="Workspace not found")
-    delete_workspace(ws_id)
+    try:
+        delete_workspace(ws_id)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Could not delete workspace: {exc}")
