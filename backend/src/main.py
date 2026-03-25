@@ -1,8 +1,9 @@
 import asyncio
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from src.routers import workspaces, documents, query, settings, ws
 from src.middleware.auth import APIKeyMiddleware
@@ -56,6 +57,21 @@ app.include_router(documents.router, prefix="/api")
 app.include_router(query.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
 app.include_router(ws.router)
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """
+    Catch-all for any unhandled exception in a route handler.
+    Returning a JSONResponse here keeps the response inside the middleware
+    stack, so CORSMiddleware can attach Access-Control-Allow-Origin headers.
+    Without this, unhandled exceptions propagate past CORSMiddleware and the
+    browser sees a response with no CORS headers and blocks it.
+    """
+    return JSONResponse(
+        status_code=500,
+        content={"error": str(exc) or f"{type(exc).__name__} (no detail)"},
+    )
 
 
 @app.get("/health")
