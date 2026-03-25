@@ -127,10 +127,11 @@ export default function AskPage() {
         {/* System prompt extra */}
         <Textarea
           label="System instructions (optional)"
-          placeholder="e.g. Respond in French. Only consider clauses marked BINDING."
+          placeholder="e.g. Only consider clauses marked BINDING. Treat pricing mentions as relevant."
           value={systemPromptExtra}
           onChange={(e) => setSystemPromptExtra(e.target.value)}
           rows={3}
+          hint="Appended to the scanning and synthesis prompts. Use content-filtering instructions only — instructions that change the output format (e.g. 'respond in French', 'use bullet points') will break JSON parsing and be ignored."
         />
 
         <Button
