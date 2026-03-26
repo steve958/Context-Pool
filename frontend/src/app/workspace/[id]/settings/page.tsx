@@ -136,12 +136,14 @@ export default function SettingsPage() {
             type="number"
             value={form.timeouts?.chunk_call_seconds ?? 60}
             onChange={(e) => set("timeouts", { ...form.timeouts!, chunk_call_seconds: Number(e.target.value) })}
+            hint="5 – 3600 s. Increase for slow local models."
           />
           <Input
             label="Synthesis timeout (s)"
             type="number"
             value={form.timeouts?.synthesis_seconds ?? 120}
             onChange={(e) => set("timeouts", { ...form.timeouts!, synthesis_seconds: Number(e.target.value) })}
+            hint="5 – 3600 s. Increase for slow local models."
           />
         </div>
 

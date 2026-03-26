@@ -77,10 +77,10 @@ class SettingsPatch(BaseModel):
             return v
         chunk = v.get("chunk_call_seconds")
         synth = v.get("synthesis_seconds")
-        if chunk is not None and not (5 <= int(chunk) <= 600):
-            raise ValueError("chunk_call_seconds must be between 5 and 600")
-        if synth is not None and not (5 <= int(synth) <= 600):
-            raise ValueError("synthesis_seconds must be between 5 and 600")
+        if chunk is not None and not (5 <= int(chunk) <= 3600):
+            raise ValueError("chunk_call_seconds must be between 5 and 3600")
+        if synth is not None and not (5 <= int(synth) <= 3600):
+            raise ValueError("synthesis_seconds must be between 5 and 3600")
         return v
 
     @field_validator("temperatures")
