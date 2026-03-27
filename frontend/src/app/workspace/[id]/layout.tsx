@@ -18,9 +18,8 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[var(--surface)] flex flex-col">
       {/* Top nav */}
       <header className="border-b border-[var(--border)] px-6 py-3 flex items-center gap-6">
-        <Link href="/workspaces" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src="/icon-32.png" alt="Context Pool" width={22} height={22} className="rounded-sm" />
-          <span className="text-sm font-semibold text-[var(--text-primary)]">Context Pool</span>
+        <Link href="/workspaces" className="flex items-center hover:opacity-80 transition-opacity">
+          <Image src="/newlogo-transparent.png" alt="Context Pool" width={120} height={44} style={{ objectFit: "contain" }} />
         </Link>
         <span className="text-[var(--border)]">/</span>
         <nav className="flex items-center gap-1">

@@ -69,7 +69,7 @@ export default function WorkspacesPage() {
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <Image src="/image.png" alt="Context Pool" width={140} height={76} priority />
+            <Image src="/newlogo-transparent.png" alt="Context Pool" width={160} height={58} priority style={{ objectFit: "contain" }} />
           </div>
           <Button onClick={() => { setError(""); setModalOpen(true); }}>New workspace</Button>
         </div>
