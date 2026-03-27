@@ -148,7 +148,7 @@ export default function HistoryDetailPage() {
             {run.question}
           </h1>
           <div className="flex flex-wrap gap-3 text-sm text-[var(--text-secondary)] mt-2">
-            <Badge variant={run.status === "complete" ? "success" : "error"}>
+            <Badge variant={run.status === "complete" ? "success" : "danger"}>
               {run.status}
             </Badge>
             <span>Model: {config.model}</span>
