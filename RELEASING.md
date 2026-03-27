@@ -32,11 +32,47 @@ docker-compose up --build
 
 Test manually or run through the key flows (upload a doc, run a query, check results).
 
-### 2. Commit your changes
+### 2. Update the promo website (REQUIRED for new features)
+
+**Rule:** Every new feature must be integrated into the "New in X.X.X" section on the promo website.
+
+See [WEBSITE_FEATURE_INTEGRATION.md](./WEBSITE_FEATURE_INTEGRATION.md) for complete guidelines.
+
+**Quick checklist:**
+- [ ] Feature added to `website/src/components/NewInVersion.tsx`
+- [ ] Version number and date updated
+- [ ] Nav badge updated in `website/src/components/Nav.tsx` (line 23)
+- [ ] Feature detail page created (optional but recommended)
+- [ ] Test website build: `cd website && npm run build`
+
+**Example - Adding to NewInVersion.tsx:**
+```typescript
+{
+  version: "1.4.0",
+  date: "March 2026",
+  isLatest: true,
+  features: [
+    {
+      id: "your-feature-id",
+      icon: "🚀",
+      title: "Your Feature Name",
+      description: "What it does for users...",
+      highlights: [
+        "Key benefit 1",
+        "Key benefit 2",
+        "Key benefit 3"
+      ],
+      docsLink: "/docs/your-feature"
+    }
+  ]
+}
+```
+
+### 3. Commit your changes
 
 ```bash
 git add <changed files>
-git commit -m "fix: brief description of what changed"
+git commit -m "feat: brief description of what changed"
 ```
 
 Follow this commit prefix convention:
@@ -48,7 +84,7 @@ Follow this commit prefix convention:
 | `chore:` | Maintenance (deps, config) |
 | `ci:` | CI/CD changes |
 
-### 3. Push to main
+### 4. Push to main
 
 ```bash
 git push
@@ -67,6 +103,17 @@ docker-compose -f docker-compose.hub.yml up -d
 ## Releasing a named version (recommended for significant changes)
 
 For meaningful milestones, create a version tag. This produces versioned images (e.g., `:v1.1.0`) alongside `:latest`, so users can pin to a specific version.
+
+### Pre-release checklist
+
+Before tagging, ensure:
+- [ ] All features are merged to `main`
+- [ ] Website updated with new features in `NewInVersion.tsx`
+- [ ] Nav badge shows correct version
+- [ ] Tests pass locally
+- [ ] Documentation updated
+
+### Create and push the tag
 
 ```bash
 # Make sure main is clean and pushed first
@@ -149,3 +196,28 @@ git push origin v1.0.2
 | Check build status | `https://github.com/steve958/Context-Pool/actions` |
 | Verify image is live | `docker pull steve958/context-pool-backend:latest` |
 | User update command | `docker-compose -f docker-compose.hub.yml pull && docker-compose -f docker-compose.hub.yml up -d` |
+
+---
+
+## Website Integration Checklist
+
+For every release with user-facing changes:
+
+```bash
+# 1. Update NewInVersion.tsx with new features
+# 2. Update Nav.tsx badge version
+# 3. Test website build
+cd website
+npm run build
+
+# 4. Commit website changes
+git add website/
+git commit -m "docs(website): add vX.Y.Z to NewInVersion section"
+
+# 5. Push and tag
+git push
+git tag vX.Y.Z
+git push origin vX.Y.Z
+```
+
+See [WEBSITE_FEATURE_INTEGRATION.md](./WEBSITE_FEATURE_INTEGRATION.md) for detailed guidelines.

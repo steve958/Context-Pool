@@ -79,6 +79,11 @@ def get_workspace(ws_id: str) -> dict | None:
     return index if index else None
 
 
+def workspace_exists(ws_id: str) -> bool:
+    """Check if a workspace exists."""
+    return _ws_dir(ws_id).exists() and _index_path(ws_id).exists()
+
+
 # ── Documents ─────────────────────────────────────────────────────────────────
 
 def save_document(ws_id: str, filename: str, content: bytes) -> dict:

@@ -357,9 +357,112 @@ FastAPI validation errors return:
 
 ---
 
-## 8. Code Examples
+## 8. Query History
 
-### Python — full end-to-end
+All completed query runs are automatically persisted to disk and can be accessed via the History API.
+
+### List workspace runs
+
+```http
+GET /api/workspaces/{ws_id}/runs?limit=50&offset=0
+```
+
+**Response `200`:**
+
+```json
+{
+  "runs": [
+    {
+      "run_id": "550e8400-e29b-41d4-a716-446655440000",
+      "question": "What are the termination clauses?",
+      "created_at": "2026-03-27T10:00:00Z",
+      "status": "complete",
+      "document_count": 3,
+      "positive_hits": 7
+    }
+  ],
+  "total": 1,
+  "limit": 50,
+  "offset": 0
+}
+```
+
+### Get run details
+
+```http
+GET /api/workspaces/{ws_id}/runs/{run_id}
+```
+
+**Response `200`:**
+
+```json
+{
+  "run_id": "550e8400-e29b-41d4-a716-446655440000",
+  "workspace_id": "ws_abc123",
+  "doc_id": null,
+  "question": "What are the termination clauses?",
+  "created_at": "2026-03-27T10:00:00Z",
+  "completed_at": "2026-03-27T10:05:00Z",
+  "status": "complete",
+  "config_snapshot": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "max_chunk_tokens": 24000,
+    "context_window_tokens": 128000
+  },
+  "result": {
+    "final_answer": "...",
+    "citations": [...],
+    "token_usage": {...}
+  },
+  "pool": [...]
+}
+```
+
+### Re-run a historical query
+
+```http
+POST /api/workspaces/{ws_id}/runs/{run_id}/rerun
+```
+
+Creates a new run with the same question and document scope. Uses current documents and settings.
+
+**Response `202`:**
+
+```json
+{
+  "run_id": "new-run-uuid",
+  "message": "Query re-run started"
+}
+```
+
+### Delete a run
+
+```http
+DELETE /api/workspaces/{ws_id}/runs/{run_id}
+```
+
+**Response `204`** (no body)
+
+### Clear workspace history
+
+```http
+DELETE /api/workspaces/{ws_id}/runs
+```
+
+**Response `200`:**
+
+```json
+{
+  "deleted": 42
+}
+```
+
+---
+
+## 9. Code Examples
+
+### Python — full end-to-end (active run)
 
 ```python
 import time
@@ -409,7 +512,7 @@ with open(f"report-{run_id}.json", "wb") as f:
 
 ---
 
-### Python — WebSocket progress tracking
+### Python — WebSocket progress tracking (active run)
 
 ```python
 import asyncio
@@ -456,7 +559,7 @@ print(result["final_answer"])
 
 ---
 
-### curl — quick test
+### curl — quick test (active run)
 
 ```bash
 # 1. Create workspace
@@ -482,4 +585,62 @@ curl -s "http://localhost:8000/api/query/$RUN/result" | jq .
 
 # 5. Download report
 curl -s "http://localhost:8000/api/query/$RUN/report" -o "report-$RUN.json"
+```
+
+---
+
+### Python — working with history
+
+```python
+import requests
+
+BASE = "http://localhost:8000/api"
+ws_id = "your-workspace-id"
+
+# List all historical runs for a workspace
+runs = requests.get(f"{BASE}/workspaces/{ws_id}/runs").json()
+print(f"Total runs: {runs['total']}")
+for run in runs["runs"]:
+    print(f"  [{run['created_at']}] {run['question']}")
+
+# Get details of a specific historical run
+run_id = runs["runs"][0]["run_id"]
+details = requests.get(f"{BASE}/workspaces/{ws_id}/runs/{run_id}").json()
+print(f"Answer: {details['result']['final_answer']}")
+
+# Re-run the same question against current documents
+rerun = requests.post(f"{BASE}/workspaces/{ws_id}/runs/{run_id}/rerun").json()
+new_run_id = rerun["run_id"]
+print(f"Re-run started: {new_run_id}")
+
+# Delete a run from history
+requests.delete(f"{BASE}/workspaces/{ws_id}/runs/{run_id}")
+
+# Clear all workspace history
+result = requests.delete(f"{BASE}/workspaces/{ws_id}/runs").json()
+print(f"Deleted {result['deleted']} runs")
+```
+
+---
+
+### curl — working with history
+
+```bash
+WS="your-workspace-id"
+
+# List runs
+curl -s "http://localhost:8000/api/workspaces/$WS/runs" | jq .
+
+# Get run details (replace RUN_ID)
+RUN_ID="run-uuid-here"
+curl -s "http://localhost:8000/api/workspaces/$WS/runs/$RUN_ID" | jq .
+
+# Re-run a historical query
+curl -s -X POST "http://localhost:8000/api/workspaces/$WS/runs/$RUN_ID/rerun" | jq .
+
+# Delete a run
+curl -s -X DELETE "http://localhost:8000/api/workspaces/$WS/runs/$RUN_ID"
+
+# Clear all history
+curl -s -X DELETE "http://localhost:8000/api/workspaces/$WS/runs" | jq .
 ```

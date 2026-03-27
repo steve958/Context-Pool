@@ -7,6 +7,7 @@ import { useParams, usePathname } from "next/navigation";
 const navItems = [
   { label: "Documents", href: "documents" },
   { label: "Ask",       href: "ask" },
+  { label: "History",   href: "history" },
   { label: "Settings",  href: "settings" },
 ];
 

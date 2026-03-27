@@ -214,3 +214,27 @@ Supported providers: `openai`, `anthropic`, `google`, `ollama`
 - **Frontend:** PascalCase for components, camelCase for variables/functions. All components are TypeScript. No `any` types.
 - **UI style:** Minimalistic, clean. Dark/light mode via Tailwind. No external component library — build primitives in `src/components/ui/`.
 - **Errors:** Backend always returns `{"error": "message"}` JSON on failure. Frontend shows inline error states, never silent failures.
+
+---
+
+## Website Feature Integration Rule
+
+**MANDATORY:** Every new user-facing feature must be integrated into the promo website's "New in X.X.X" section.
+
+### Process
+1. Add feature to `website/src/components/NewInVersion.tsx`
+2. Update version badge in `website/src/components/Nav.tsx` (line 23)
+3. See `WEBSITE_FEATURE_INTEGRATION.md` for complete guidelines
+4. See `website/src/components/NewInVersion.template.tsx` for templates
+
+### Why?
+- Keeps users informed about new capabilities
+- Drives feature adoption
+- Creates marketing momentum
+- Documents evolution of the product
+
+### Checklist
+- [ ] Feature added to NewInVersion.tsx with icon, title, description, highlights
+- [ ] Version number and date accurate
+- [ ] Nav badge updated
+- [ ] Links to docs (if applicable)

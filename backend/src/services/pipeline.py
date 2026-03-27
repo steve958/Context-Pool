@@ -181,6 +181,9 @@ async def _run_pipeline(
     RunRegistry.update(run_id, status="complete", result=result)
     await RunRegistry.emit(run_id, {"type": "synthesis_finished"})
 
+    # Persist the completed run to disk
+    await _persist_run(run_id, workspace_id, doc_id, question, cfg, result, pool)
+
 
 def _parse_document(path, ocr_enabled: bool, eml_scope: str) -> str:
     from src.parsers import pdf, ocr, docx, html, eml, txt
@@ -397,3 +400,49 @@ def _sum_usage(a: dict, b: dict) -> dict | None:
         if isinstance(v, (int, float)):
             result[k] = result.get(k, 0) + v
     return result or None
+
+
+async def _persist_run(
+    run_id: str,
+    workspace_id: str,
+    doc_id: str | None,
+    question: str,
+    cfg,
+    result: dict,
+    pool: list[dict],
+) -> None:
+    """
+    Persist a completed run to disk.
+    Runs in thread pool to avoid blocking event loop.
+    """
+    from src.services.run_repository import RunRepository, PersistedRun
+
+    run_data = RunRegistry.get(run_id)
+    if not run_data:
+        return
+
+    persisted = PersistedRun(
+        run_id=run_id,
+        workspace_id=workspace_id,
+        doc_id=doc_id,
+        question=question,
+        created_at=run_data.get("created_at", datetime.now(timezone.utc).isoformat()),
+        completed_at=datetime.now(timezone.utc).isoformat(),
+        status="complete",
+        config_snapshot={
+            "provider": cfg.provider,
+            "model": cfg.model,
+            "max_chunk_tokens": cfg.max_chunk_tokens,
+            "context_window_tokens": cfg.context_window_tokens,
+        },
+        result=result,
+        pool=pool,
+    )
+
+    # Run in thread pool to avoid blocking
+    try:
+        await asyncio.to_thread(RunRepository.save, persisted)
+    except Exception as exc:
+        # Log but don't fail the run if persistence fails
+        import logging
+        logging.getLogger(__name__).warning(f"Failed to persist run {run_id}: {exc}")

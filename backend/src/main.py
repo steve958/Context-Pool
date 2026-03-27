@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.routers import workspaces, documents, query, settings, ws
+from src.routers import workspaces, documents, query, settings, ws, history
 from src.middleware.auth import APIKeyMiddleware
 
 
@@ -15,8 +15,10 @@ async def lifespan(app: FastAPI):
     from src.config import load_config
     from src.services.storage import ensure_data_dirs
     from src.services.pipeline import RunRegistry
+    from src.services.run_repository import RunRepository
     load_config()
     ensure_data_dirs()
+    RunRepository.ensure_dirs()
 
     # Background task: purge stale completed runs every hour
     async def _cleanup_loop():
@@ -57,6 +59,7 @@ app.include_router(documents.router, prefix="/api")
 app.include_router(query.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
 app.include_router(ws.router)
+app.include_router(history.router, prefix="/api")
 
 
 @app.exception_handler(Exception)

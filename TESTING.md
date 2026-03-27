@@ -1,5 +1,7 @@
 # Context Pool — Manual Testing Guide
 
+> **New:** See [QUERY_HISTORY_TESTING.md](./QUERY_HISTORY_TESTING.md) for comprehensive testing of the Query History feature.
+
 ## Prerequisites
 
 You need **one** of:
@@ -281,3 +283,59 @@ curl http://localhost:8000/api/settings
 | Inspect screen | Shows only positive-hit chunks, not all chunks |
 | Preview screen | Full document markdown renders, page markers visible |
 | Scoped query | Selecting a single document limits scanning to that doc |
+
+| Markdown Preview | Full document markdown renders, page markers visible |
+| Scoped query | Selecting a single document limits scanning to that doc |
+
+---
+
+## Testing Query History (New in v1.4.0)
+
+### Quick API Test
+
+```bash
+# 1. Run a query first (follow steps above), then:
+
+# 2. List history for workspace
+curl http://localhost:8000/api/workspaces/{ws_id}/runs
+
+# 3. Get specific run details
+curl http://localhost:8000/api/workspaces/{ws_id}/runs/{run_id}
+
+# 4. Re-run historical query
+curl -X POST http://localhost:8000/api/workspaces/{ws_id}/runs/{run_id}/rerun
+
+# 5. Delete a run
+curl -X DELETE http://localhost:8000/api/workspaces/{ws_id}/runs/{run_id}
+```
+
+### UI Test Checklist
+
+Open `http://localhost:3000` and test:
+
+- [ ] **History Tab**: Click "History" in workspace navigation
+- [ ] **Empty State**: New workspace shows "No query history yet" message
+- [ ] **List View**: Completed queries appear with timestamps, doc counts, hit counts
+- [ ] **View Details**: Click "View" to see full run details (answer, citations, token usage)
+- [ ] **Re-run**: Click "Re-run" to execute same question against current documents
+- [ ] **Delete Single**: Click "Delete" to remove one run with confirmation
+- [ ] **Clear All**: Click "Clear All" to remove all workspace history
+
+### What to Validate
+
+| Feature | Pass criteria |
+|---------|---------------|
+| History persistence | Run appears in history after completion |
+| History list | Shows question, timestamp, doc count, hits, status |
+| Run details | Full result with answer, citations, token usage, pool |
+| Re-run | Creates new run with same question, navigates to progress |
+| Delete | Removes run from list and disk |
+| Clear all | Removes all runs, shows empty state |
+| Persistence | History survives container restart |
+
+See [QUERY_HISTORY_TESTING.md](./QUERY_HISTORY_TESTING.md) for comprehensive test suite including:
+- Backend API tests
+- Frontend UI tests  
+- Integration/E2E tests
+- Performance tests
+- Error handling tests
