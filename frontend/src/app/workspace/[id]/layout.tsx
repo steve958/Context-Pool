@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
@@ -17,8 +18,9 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[var(--surface)] flex flex-col">
       {/* Top nav */}
       <header className="border-b border-[var(--border)] px-6 py-3 flex items-center gap-6">
-        <Link href="/workspaces" className="text-sm font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors">
-          Context Pool
+        <Link href="/workspaces" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Image src="/icon-32.png" alt="Context Pool" width={22} height={22} className="rounded-sm" />
+          <span className="text-sm font-semibold text-[var(--text-primary)]">Context Pool</span>
         </Link>
         <span className="text-[var(--border)]">/</span>
         <nav className="flex items-center gap-1">

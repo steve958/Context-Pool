@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { api, Workspace } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
@@ -67,9 +68,8 @@ export default function WorkspacesPage() {
     <div className="min-h-screen bg-[var(--surface)]">
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-xl font-semibold text-[var(--text-primary)]">Context Pool</h1>
-            <p className="text-sm text-[var(--text-muted)] mt-0.5">Select or create a workspace</p>
+          <div className="flex items-center gap-3">
+            <Image src="/image.png" alt="Context Pool" width={140} height={76} priority />
           </div>
           <Button onClick={() => { setError(""); setModalOpen(true); }}>New workspace</Button>
         </div>
