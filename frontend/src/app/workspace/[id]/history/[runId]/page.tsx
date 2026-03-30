@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Spinner } from "@/components/ui/Spinner";
+import { Modal } from "@/components/ui/Modal";
 import type { RunDetail, Citation } from "@/lib/types";
 
 function CitationCard({
@@ -66,6 +67,9 @@ export default function HistoryDetailPage() {
   const [docMap, setDocMap] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -86,21 +90,25 @@ export default function HistoryDetailPage() {
   }, [wsId, runId]);
 
   async function handleRerun() {
+    setActionError("");
     try {
       const { run_id: newRunId } = await api.history.rerun(wsId, runId);
       router.push(`/workspace/${wsId}/run/${newRunId}`);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to rerun");
+      setActionError(err instanceof Error ? err.message : "Failed to rerun");
     }
   }
 
   async function handleDelete() {
-    if (!confirm("Delete this run from history?")) return;
+    setActionError("");
+    setDeleting(true);
     try {
       await api.history.delete(wsId, runId);
+      setDeleteOpen(false);
       router.push(`/workspace/${wsId}/history`);
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete");
+      setDeleting(false);
+      setActionError(err instanceof Error ? err.message : "Failed to delete");
     }
   }
 
@@ -133,7 +141,7 @@ export default function HistoryDetailPage() {
   }
 
   const createdDate = new Date(run.created_at).toLocaleString();
-  const config = run.config_snapshot;
+  const config = run.config_snapshot ?? {};
   const result = run.result;
 
   return (
@@ -151,20 +159,26 @@ export default function HistoryDetailPage() {
             <Badge variant={run.status === "complete" ? "success" : "danger"}>
               {run.status}
             </Badge>
-            <span>Model: {config.model}</span>
-            <span>Provider: {config.provider}</span>
-            <span>Chunks: {config.max_chunk_tokens.toLocaleString()} tokens</span>
+            <span>Model: {config.model ?? "Unknown"}</span>
+            <span>Provider: {config.provider ?? "Unknown"}</span>
+            <span>Chunks: {(config.max_chunk_tokens ?? 0).toLocaleString()} tokens</span>
           </div>
         </div>
         <div className="flex gap-2 shrink-0">
           <Button variant="ghost" size="sm" onClick={handleRerun}>
             Re-run
           </Button>
-          <Button variant="danger" size="sm" onClick={handleDelete}>
+          <Button variant="danger" size="sm" onClick={() => setDeleteOpen(true)}>
             Delete
           </Button>
         </div>
       </div>
+
+      {actionError && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          {actionError}
+        </div>
+      )}
 
       {/* Result */}
       {result ? (
@@ -174,19 +188,19 @@ export default function HistoryDetailPage() {
               Answer
             </p>
             <p className="text-sm text-[var(--text-primary)] leading-relaxed whitespace-pre-wrap">
-              {result.final_answer}
+              {result.final_answer ?? "No answer available"}
             </p>
           </Card>
 
           {/* Citations */}
-          {result.citations.length > 0 && (
+          {result.citations && result.citations.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide">
                 Citations ({result.citations.length})
               </p>
               {result.citations.map((c, i) => (
                 <CitationCard
-                  key={`${c.chunk_id}-${i}`}
+                  key={`${c.chunk_id ?? i}-${i}`}
                   citation={c}
                   index={i}
                   docName={docMap.get(c.doc_id) ?? c.doc_id}
@@ -221,7 +235,7 @@ export default function HistoryDetailPage() {
           </summary>
           <div className="mt-4 space-y-3">
             {run.pool.map((hit, i) => (
-              <Card key={hit.chunk_id} className="p-4">
+              <Card key={hit.chunk_id ?? i} className="p-4">
                 <div className="text-xs text-[var(--text-muted)] mb-2">
                   Hit #{i + 1} • {docMap.get(hit.doc_id) ?? hit.doc_id}
                   {hit.heading_path && ` • ${hit.heading_path}`}
@@ -229,7 +243,7 @@ export default function HistoryDetailPage() {
                 <p className="text-sm text-[var(--text-primary)] mb-2">
                   {hit.answer}
                 </p>
-                {hit.evidence_quotes?.length > 0 && (
+                {hit.evidence_quotes && hit.evidence_quotes.length > 0 && (
                   <blockquote className="text-xs text-[var(--text-secondary)] font-mono bg-[var(--surface-overlay)] px-3 py-2 rounded">
                     {hit.evidence_quotes[0]}
                   </blockquote>
@@ -246,6 +260,24 @@ export default function HistoryDetailPage() {
           ← Back to History
         </Button>
       </div>
+
+      {/* Delete confirmation modal */}
+      <Modal open={deleteOpen} onClose={() => setDeleteOpen(false)} title="Delete run">
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-[var(--text-secondary)]">
+            Are you sure you want to delete this run from history? This action cannot be undone.
+          </p>
+          {actionError && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              {actionError}
+            </div>
+          )}
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setDeleteOpen(false)}>Cancel</Button>
+            <Button variant="danger" onClick={handleDelete} loading={deleting}>Delete</Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
